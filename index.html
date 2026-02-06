@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bin Resucitate v2 - HELL EDITION</title>
+    <style>
+        :root { 
+            --fire-red: #ff4500; 
+            --lava-orange: #ff8c00;
+            --hell-bg: #050000;
+            --border-glow: #7a0000;
+        }
+
+        body { 
+            background: var(--hell-bg); 
+            color: #ffcc00; 
+            font-family: 'Courier New', monospace; 
+            padding: 10px; 
+            line-height: 1.4;
+            /* Fondo de Dragón - Usando un estilo de silueta imponente */
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('https://img.freepik.com/premium-photo/mighty-red-dragon-breathing-fire-dark-background_933496-18961.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        .terminal { 
+            max-width: 600px; 
+            margin: 40px auto; 
+            background: rgba(20, 5, 5, 0.9); 
+            border: 2px solid var(--fire-red); 
+            border-radius: 10px; 
+            padding: 25px; 
+            box-shadow: 0 0 30px rgba(255, 69, 0, 0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        h2 { 
+            color: var(--fire-red); 
+            text-align: center; 
+            border-bottom: 2px solid var(--fire-red); 
+            padding-bottom: 10px; 
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px #ff0000, 2px 2px #000;
+            letter-spacing: 2px;
+        }
+
+        .step { 
+            background: rgba(0, 0, 0, 0.8); 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-radius: 4px; 
+            border-left: 5px solid #ff0000;
+            box-shadow: inset 0 0 10px #300;
+        }
+
+        label { display: block; color: var(--lava-orange); font-size: 0.9rem; margin-bottom: 5px; font-weight: bold; }
+
+        input { 
+            width: 100%; 
+            background: #1a0505; 
+            border: 1px solid #551111; 
+            color: #fff; 
+            padding: 12px; 
+            box-sizing: border-box; 
+            margin-bottom: 15px; 
+            outline: none; 
+            border-radius: 3px;
+        }
+
+        input:focus { 
+            border-color: var(--fire-red); 
+            box-shadow: 0 0 8px var(--fire-red);
+        }
+
+        /* BOTONES DE FUEGO */
+        button { 
+            width: 100%; 
+            background: linear-gradient(0deg, #800000 0%, #ff4500 50%, #ff8c00 100%);
+            color: #fff; 
+            border: none; 
+            padding: 15px; 
+            font-weight: 1000; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            text-shadow: 1px 1px 3px #000;
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4);
+        }
+
+        button:hover { 
+            transform: scale(1.02);
+            box-shadow: 0 0 25px var(--fire-red);
+            filter: brightness(1.2);
+        }
+
+        /* Animación de "Candela" */
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: flame 2s infinite linear;
+        }
+
+        @keyframes flame {
+            0% { transform: translate(-10%, 10%) rotate(0deg); }
+            50% { transform: translate(10%, -10%) rotate(180deg); }
+            100% { transform: translate(-10%, 10%) rotate(360deg); }
+        }
+
+        #output { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: #000; 
+            border: 1px solid var(--fire-red); 
+            font-size: 0.95rem; 
+            color: #ffd700; 
+            white-space: pre-wrap;
+            box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        .burning-text {
+            animation: burn 1.5s infinite alternate;
+        }
+
+        @keyframes burn {
+            from { text-shadow: 0 0 5px #ff4500; }
+            to { text-shadow: 0 0 20px #ff0000, 0 0 10px #ff8c00; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="terminal">
+    <h2 class="burning-text">INFERNO EXTRAPOLADOR</h2>
+
+    <div class="step">
+        <label>🔥 ÚLTIMOS 4 DÍGITOS CC REAL:</label>
+        <input type="text" id="last4" placeholder="Ej: 3129" maxlength="4">
+        
+        <label>🔥 DOS CC GENERADAS (NAMSO):</label>
+        <input type="text" id="cc1" placeholder="CC Generada N° 1">
+        <input type="text" id="cc2" placeholder="CC Generada N° 2">
+        <button onclick="faseUno()">INVOCAR EXTRAPOLACIÓN</button>
+    </div>
+
+    <div class="step">
+        <label>🔥 PEGUE CCs DEL BIN EXTRAPOLADO:</label>
+        <input type="text" id="ext_cc1" placeholder="CC del Bin Extrapolado 1">
+        <input type="text" id="ext_cc2" placeholder="CC del Bin Extrapolado 2">
+        <button onclick="faseFinal()">FORJAR BIN FINAL (SOFÍA)</button>
+    </div>
+
+    <div id="output">Consola del Inframundo: Esperando sacrificios (datos)...</div>
+</div>
+
+<script>
+    function faseUno() {
+        const last4 = document.getElementById('last4').value;
+        const cc1 = document.getElementById('cc1').value.trim();
+        const cc2 = document.getElementById('cc2').value.trim();
+        const out = document.getElementById('output');
+
+        if (last4.length < 4 || cc1.length < 15 || cc2.length < 15) {
+            out.innerText = "❌ ERROR INFERNAL: Faltan datos en el ritual.";
+            return;
+        }
+
+        const bin6 = cc1.substring(0, 6);
+        function extrapolar(cc) {
+            return bin6 + cc[6] + "x" + cc[8] + "x" + cc[10] + "x" + last4;
+        }
+
+        const res1 = extrapolar(cc1);
+        const res2 = extrapolar(cc2);
+
+        out.innerHTML = `🔥 BINS EXTRAPOLADOS EXITOSAMENTE:\n\n1️⃣: ${res1}\n2️⃣: ${res2}\n\n[!] RITUAL: Genera CCs con estos BINS y pégalos abajo.`;
+    }
+
+    function faseFinal() {
+        const ecc1 = document.getElementById('ext_cc1').value.trim();
+        const ecc2 = document.getElementById('ext_cc2').value.trim();
+        const out = document.getElementById('output');
+
+        if (ecc1.length < 15 || ecc2.length < 15) {
+            out.innerText = "❌ ERROR: El fuego se extingue. Pega las CCs generadas.";
+            return;
+        }
+
+        function metodoSofia(cc) {
+            let bin6 = cc.substring(0, 6);
+            let varianza = cc.substring(6, 8) + "35"; 
+            return bin6 + varianza + "xxxxxx";
+        }
+
+        out.innerHTML = `💀 RESULTADO FINAL (PODER DE SOFÍA):\n\n[1] BIN MAESTRO: ${metodoSofia(ecc1)}\n[2] BIN MAESTRO: ${metodoSofia(ecc2)}\n\nESTADO: LIVES ARDIENDO / MULTI BIN ACTIVADO`;
+    }
+</script>
+
+</body>
+</html>
